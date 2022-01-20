@@ -25,6 +25,7 @@ public class Settings extends BaseSettings {
   private static final String ARG_PERIOD_CHECK_WORK = "periodcheckworkms";
   public static final String ARG_QUESTIONS_DIR = "questionsdir";
   public static final String ARG_RUN_MODE = "runmode";
+  public static final String ARG_S3_CONFIG = "s3cfg";
   public static final String ARG_SERVICE_NAME = "servicename";
   private static final String ARG_SERVICE_WORK_PORT = "coordinatorworkport";
   private static final String ARG_SERVICE_WORK_V2_PORT = "coordinatorworkv2port";
@@ -51,6 +52,7 @@ public class Settings extends BaseSettings {
   private String _questionsDir;
 
   private RunMode _runMode;
+  private String _s3cfg;
   private boolean _sanityCheck;
   private String _serviceName;
   private String _snapshotDir;
@@ -164,6 +166,7 @@ public class Settings extends BaseSettings {
     setDefaultProperty(ARG_NO_SANITY_CHECK, false);
     setDefaultProperty(ARG_PERIOD_CHECK_WORK, 1000);
     setDefaultProperty(ARG_RUN_MODE, RunMode.batch.toString());
+    setDefaultProperty(ARG_S3_CONFIG, null);
     setDefaultProperty(ARG_SERVICE_NAME, "client-service");
     setDefaultProperty(ARG_SERVICE_WORK_PORT, CoordConsts.SVC_CFG_WORK_PORT);
     setDefaultProperty(ARG_SERVICE_WORK_V2_PORT, CoordConsts.SVC_CFG_WORK_V2_PORT);
@@ -200,6 +203,8 @@ public class Settings extends BaseSettings {
     addOption(ARG_QUESTIONS_DIR, "directory to output questions in", "questions_dir");
 
     addOption(ARG_RUN_MODE, "which mode to run in (batch|interactive|genquestions)", "run_mode");
+
+    addOption(ARG_S3_CONFIG, "S3 Bucket configuration file for bucket storage", "s3cfg");
 
     addOption(ARG_SERVICE_NAME, "service name", "service_name");
 
@@ -251,6 +256,7 @@ public class Settings extends BaseSettings {
     _periodCheckWorkMs = getLongOptionValue(ARG_PERIOD_CHECK_WORK);
     _questionsDir = getStringOptionValue(ARG_QUESTIONS_DIR);
     _runMode = RunMode.valueOf(getStringOptionValue(ARG_RUN_MODE));
+    _s3cfg = getStringOptionValue(ARG_S3_CONFIG);
     _sanityCheck = !getBooleanOptionValue(ARG_NO_SANITY_CHECK);
     _serviceName = getStringOptionValue(ARG_SERVICE_NAME);
     _tracingAgentHost = getStringOptionValue(ARG_TRACING_AGENT_HOST);

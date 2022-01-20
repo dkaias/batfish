@@ -107,6 +107,11 @@ java_library(
         "@maven//:org_parboiled_parboiled_core",
         "@maven//:org_parboiled_parboiled_java",
         "@maven//:org_skyscreamer_jsonassert",
+        "@maven//:software_amazon_awssdk_s3",
+        "@maven//:software_amazon_awssdk_sdk_core",
+        "@maven//:software_amazon_awssdk_regions",
+        "@maven//:software_amazon_awssdk_auth",
+        "@maven//:software_amazon_awssdk_sts",
     ],
 )
 

@@ -1,11 +1,15 @@
 package org.batfish.common.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.annotation.Nonnull;
 import org.apache.commons.io.IOUtils;
 
@@ -28,6 +32,11 @@ public final class Resources {
     } catch (IOException e) {
       throw new UncheckedIOException("Could not open resource: '" + resourcePath + "'", e);
     }
+  }
+
+  public static @Nonnull String readFile(String filePath, Charset charset) throws IOException {
+    Path configFilePath = Paths.get(filePath);
+    return new String(Files.readAllBytes(configFilePath), charset);
   }
 
   private Resources() {}

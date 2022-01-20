@@ -38,6 +38,8 @@ import org.batfish.coordinator.config.Settings;
 import org.batfish.coordinator.id.StorageBasedIdManager;
 import org.batfish.datamodel.questions.InstanceData;
 import org.batfish.storage.FileBasedStorage;
+import org.batfish.storage.S3BucketStorage;
+import org.batfish.storage.StorageProvider;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -303,10 +305,18 @@ public class Main {
   private static void initWorkManager(
       BindPortFutures bindPortFutures,
       WorkExecutorCreator workExecutorCreator,
-      boolean initLegacyWorkMgrV1) {
-    FileBasedStorage fbs = new FileBasedStorage(_settings.getContainersLocation(), _logger);
-    _workManager =
-        new WorkMgr(_settings, _logger, new StorageBasedIdManager(fbs), fbs, workExecutorCreator);
+      boolean initLegacyWorkMgrV1) throws IOException {
+    Path containersLocation = _settings.getContainersLocation();
+    StorageProvider storageProvider;
+
+    if (_settings.getS3Cfg() != null) {
+      // TODO: read yaml file here to populate stuff?
+      // TODO: can we make this accept the same parameters as FileBasedStorage? Maybe OS env vars?
+      storageProvider = new S3BucketStorage(_settings.getS3Cfg(), containersLocation, _logger);
+    } else {
+      storageProvider = new FileBasedStorage(containersLocation, _logger);
+    }
+    _workManager = new WorkMgr(_settings, _logger, new StorageBasedIdManager(storageProvider), storageProvider, workExecutorCreator);
     _workManager.startWorkManager();
     if (initLegacyWorkMgrV1) {
       // Initialize and start the work manager service using the legacy v1 API and Jettison.

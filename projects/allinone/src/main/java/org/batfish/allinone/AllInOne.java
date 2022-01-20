@@ -77,6 +77,14 @@ public class AllInOne {
               org.batfish.client.config.Settings.ARG_COMMAND_FILE, _settings.getCommandFile());
     }
 
+    if (_settings.getS3Cfg() != null) {
+      argString +=
+          String.format(
+              " -%s %s",
+              org.batfish.coordinator.config.Settings.ARG_S3_CONFIG,
+              _settings.getS3Cfg());
+    }
+
     if (_settings.getSnapshotDir() != null) {
       argString +=
           String.format(
@@ -167,6 +175,11 @@ public class AllInOne {
     if (_settings.getCommandFile() != null) {
       batfishArgs += String.format(" -%s %s", org.batfish.config.Settings.ARG_SERVICE_PORT, 0);
     }
+    if (_settings.getS3Cfg() != null) {
+      batfishArgs += String.format(" -%s %s",
+              org.batfish.coordinator.config.Settings.ARG_S3_CONFIG,
+              _settings.getS3Cfg());
+    }
 
     String[] initialArgArray = getArgArrayFromString(batfishArgs);
     List<String> args = new ArrayList<>(Arrays.asList(initialArgArray));
@@ -206,6 +219,14 @@ public class AllInOne {
               0,
               org.batfish.coordinator.config.Settings.ARG_SERVICE_WORK_V2_PORT,
               0);
+    }
+
+    if (_settings.getS3Cfg() != null) {
+      coordinatorArgs +=
+          String.format(
+              " -%s %s",
+              org.batfish.coordinator.config.Settings.ARG_S3_CONFIG,
+              _settings.getS3Cfg());
     }
     String[] initialArgArray = getArgArrayFromString(coordinatorArgs);
     List<String> args = new ArrayList<>(Arrays.asList(initialArgArray));

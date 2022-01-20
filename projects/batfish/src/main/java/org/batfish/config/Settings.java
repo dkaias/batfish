@@ -69,6 +69,8 @@ public final class Settings extends BaseSettings implements GrammarSettings {
 
   public static final String ARG_RUN_MODE = "runmode";
 
+  public static final String ARG_S3_CONFIG = "s3cfg";
+
   private static final String ARG_SEQUENTIAL = "sequential";
 
   private static final String ARG_SERVICE_BIND_HOST = "servicebindhost";
@@ -261,6 +263,7 @@ public final class Settings extends BaseSettings implements GrammarSettings {
     if (getDeltaTestrig() != null && !getDifferential()) {
       tr = getDeltaTestrig();
     }
+
     return getWorkLogPath(getStorageBase(), getContainer(), tr, getTaskId()).toString();
   }
 
@@ -313,6 +316,8 @@ public final class Settings extends BaseSettings implements GrammarSettings {
   public RunMode getRunMode() {
     return RunMode.valueOf(_config.getString(ARG_RUN_MODE).toUpperCase());
   }
+
+  public String getS3Cfg() { return _config.getString(ARG_S3_CONFIG); }
 
   public boolean getSequential() {
     return _config.getBoolean(ARG_SEQUENTIAL);
@@ -465,6 +470,7 @@ public final class Settings extends BaseSettings implements GrammarSettings {
     setDefaultProperty(ARG_PRINT_PARSE_TREE_LINE_NUMS, false);
     setDefaultProperty(BfConsts.ARG_QUESTION_NAME, null);
     setDefaultProperty(ARG_RUN_MODE, RunMode.WORKER.toString());
+    setDefaultProperty(ARG_S3_CONFIG, null);
     setDefaultProperty(ARG_SEQUENTIAL, false);
     setDefaultProperty(ARG_SERVICE_BIND_HOST, "localhost");
     setDefaultProperty(ARG_SERVICE_HOST, "localhost");
@@ -634,6 +640,8 @@ public final class Settings extends BaseSettings implements GrammarSettings {
         "mode to run in",
         Arrays.stream(RunMode.values()).map(Object::toString).collect(Collectors.joining("|")));
 
+    addOption(ARG_S3_CONFIG, "S3 Bucket configuration file for bucket storage", "s3cfg");
+
     addBooleanOption(ARG_SEQUENTIAL, "force sequential operation");
 
     addOption(
@@ -786,6 +794,7 @@ public final class Settings extends BaseSettings implements GrammarSettings {
     getBooleanOptionValue(ARG_PRINT_PARSE_TREE_LINE_NUMS);
     getStringOptionValue(BfConsts.ARG_QUESTION_NAME);
     getStringOptionValue(ARG_RUN_MODE);
+    getStringOptionValue(ARG_S3_CONFIG);
     getBooleanOptionValue(ARG_SEQUENTIAL);
     getBooleanOptionValue(BfConsts.COMMAND_PARSE_VENDOR_INDEPENDENT);
     getBooleanOptionValue(BfConsts.COMMAND_PARSE_VENDOR_SPECIFIC);
@@ -883,6 +892,8 @@ public final class Settings extends BaseSettings implements GrammarSettings {
   public void setRunMode(RunMode runMode) {
     _config.setProperty(ARG_RUN_MODE, runMode.toString());
   }
+
+  public void setS3Cfg(String configFile) { _config.setProperty(ARG_S3_CONFIG, configFile); }
 
   public void setSequential(boolean sequential) {
     _config.setProperty(ARG_SEQUENTIAL, sequential);

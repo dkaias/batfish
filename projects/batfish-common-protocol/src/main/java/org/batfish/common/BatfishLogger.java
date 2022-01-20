@@ -214,7 +214,7 @@ public final class BatfishLogger {
   }
 
   public void close() {
-    if (_logFile != null) {
+    if (_ps != null) {
       _ps.close();
     }
   }

@@ -232,6 +232,7 @@ import org.batfish.specifier.SpecifierContext;
 import org.batfish.specifier.SpecifierContextImpl;
 import org.batfish.specifier.UnionLocationSpecifier;
 import org.batfish.storage.FileBasedStorage;
+import org.batfish.storage.S3BucketStorage;
 import org.batfish.storage.StorageProvider;
 import org.batfish.symbolic.IngressLocation;
 import org.batfish.topology.TopologyProviderImpl;
@@ -482,10 +483,16 @@ public class Batfish extends PluginConsumer implements IBatfish {
     _terminatingExceptionMessage = null;
     _answererCreators = new HashMap<>();
     _dataPlanePlugins = new HashMap<>();
-    _storage =
-        alternateStorageProvider != null
-            ? alternateStorageProvider
-            : new FileBasedStorage(_settings.getStorageBase(), _logger, this::newBatch);
+
+    // TODO: figure out if we can use alternateStorageProvider here instead
+    if (_settings.getS3Cfg() != null) {
+      _storage = new S3BucketStorage(_settings.getS3Cfg(), _settings.getStorageBase(), _logger);
+    } else {
+      _storage =
+              alternateStorageProvider != null
+                      ? alternateStorageProvider
+                      : new FileBasedStorage(_settings.getStorageBase(), _logger, this::newBatch);
+    }
     _idResolver =
         alternateIdResolver != null ? alternateIdResolver : new StorageBasedIdResolver(_storage);
     _topologyProvider = new TopologyProviderImpl(this, _storage);

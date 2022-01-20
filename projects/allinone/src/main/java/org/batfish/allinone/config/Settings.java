@@ -23,6 +23,7 @@ public class Settings extends BaseSettings {
   private static final String ARG_LOG_LEVEL = "loglevel";
   private static final String ARG_RUN_CLIENT = "runclient";
   private static final String ARG_RUN_MODE = org.batfish.client.config.Settings.ARG_RUN_MODE;
+  private static final String ARG_S3_CONFIG = org.batfish.client.config.Settings.ARG_S3_CONFIG;
   public static final String ARG_SERVICE_NAME = "servicename";
   private static final String ARG_SNAPSHOT_DIR =
       org.batfish.client.config.Settings.ARG_SNAPSHOT_DIR;
@@ -42,6 +43,7 @@ public class Settings extends BaseSettings {
   private String _logLevel;
   private boolean _runClient;
   private String _runMode;
+  private String _s3Cfg;
   private String _serviceName;
   private String _snapshotDir;
   private String _tracingAgentHost;
@@ -107,6 +109,8 @@ public class Settings extends BaseSettings {
     return _runMode;
   }
 
+  public String getS3Cfg() { return _s3Cfg; }
+
   public String getServiceName() {
     return _serviceName;
   }
@@ -141,6 +145,7 @@ public class Settings extends BaseSettings {
     setDefaultProperty(ARG_COORDINATOR_ARGS, "");
     setDefaultProperty(ARG_RUN_CLIENT, true);
     setDefaultProperty(ARG_RUN_MODE, "batch");
+    setDefaultProperty(ARG_S3_CONFIG, null);
     setDefaultProperty(ARG_SERVICE_NAME, "allinone-service");
     setDefaultProperty(ARG_TRACING_AGENT_HOST, "localhost");
     setDefaultProperty(ARG_TRACING_AGENT_PORT, 5775);
@@ -176,6 +181,8 @@ public class Settings extends BaseSettings {
     addBooleanOption(ARG_RUN_CLIENT, "whether to run the client");
 
     addOption(ARG_RUN_MODE, "which mode to run in (batch|interactive)", "run_mode");
+
+    addOption(ARG_S3_CONFIG, "S3 storage configuration file", "s3cfg");
 
     addOption(ARG_SERVICE_NAME, "service name", "service_name");
 
@@ -215,6 +222,7 @@ public class Settings extends BaseSettings {
     _coordinatorArgs = getStringOptionValue(ARG_COORDINATOR_ARGS);
     _runClient = getBooleanOptionValue(ARG_RUN_CLIENT);
     _runMode = getStringOptionValue(ARG_RUN_MODE);
+    _s3Cfg = getStringOptionValue(ARG_S3_CONFIG);
     _serviceName = getStringOptionValue(ARG_SERVICE_NAME);
     _snapshotDir = getStringOptionValue(ARG_SNAPSHOT_DIR);
     _tracingAgentHost = getStringOptionValue(ARG_TRACING_AGENT_HOST);

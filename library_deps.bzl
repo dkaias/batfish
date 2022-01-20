@@ -66,4 +66,9 @@ BATFISH_MAVEN_ARTIFACTS = [
     "org.parboiled:parboiled-java:1.3.1",
     "org.skyscreamer:jsonassert:1.5.0",
     "org.xerial:sqlite-jdbc:3.25.2",
+    "software.amazon.awssdk:s3:2.17.100",
+    "software.amazon.awssdk:sdk-core:2.17.100",
+    "software.amazon.awssdk:regions:2.17.100",
+    "software.amazon.awssdk:auth:2.17.100",
+    "software.amazon.awssdk:sts:2.17.100",
 ]

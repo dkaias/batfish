@@ -3,6 +3,7 @@ package org.batfish.main;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import org.batfish.common.Task;
 import org.batfish.config.Settings;
 import org.batfish.datamodel.answers.Answer;
 import org.batfish.datamodel.answers.AnswerStatus;
+import org.batfish.storage.S3LogOutputStream;
 import org.batfish.version.BatfishVersion;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -350,8 +352,15 @@ public class Driver {
     // try/catch so that the worker becomes idle again in case of problem submitting thread.
     try {
 
-      BatfishLogger jobLogger =
-          new BatfishLogger(settings.getLogLevel(), settings.getTimestamp(), settings.getLogFile());
+      BatfishLogger jobLogger;
+      if (_mainSettings.getS3Cfg() != null) {
+        S3LogOutputStream s3WorkLog =
+                new S3LogOutputStream(settings.getLogFile(), settings.getStorageBase(), settings.getS3Cfg());
+        PrintStream s3PrintStream = new PrintStream(s3WorkLog);
+        jobLogger = new BatfishLogger(settings.getLogLevel(), settings.getTimestamp(), s3PrintStream);
+      } else {
+        jobLogger = new BatfishLogger(settings.getLogLevel(), settings.getTimestamp(), settings.getLogFile());
+      }
       settings.setLogger(jobLogger);
 
       Task task = new Task(args);

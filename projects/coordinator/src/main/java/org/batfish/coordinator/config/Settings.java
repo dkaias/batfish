@@ -66,6 +66,8 @@ public class Settings extends BaseSettings {
 
   private static final String EXECUTABLE_NAME = "coordinator";
 
+  public static final String ARG_S3_CONFIG = "s3cfg";
+
   private Authorizer.Type _authorizerType;
   private Path _containersLocation;
   private String _dbAuthorizerConnString;
@@ -100,6 +102,7 @@ public class Settings extends BaseSettings {
   private boolean _sslWorkTrustAllCerts;
   private Path _sslWorkTruststoreFile;
   private String _sslWorkTruststorePassword;
+  private String _s3cfg;
   private String _storageAccountKey;
   private String _storageAccountName;
   private String _storageProtocol;
@@ -256,6 +259,10 @@ public class Settings extends BaseSettings {
     return _sslWorkTruststorePassword;
   }
 
+  public String getS3Cfg() {
+    return _s3cfg;
+  }
+
   public String getStorageAccountKey() {
     return _storageAccountKey;
   }
@@ -328,6 +335,7 @@ public class Settings extends BaseSettings {
     setDefaultProperty(ARG_TRACING_AGENT_HOST, "localhost");
     setDefaultProperty(ARG_TRACING_AGENT_PORT, 5775);
     setDefaultProperty(ARG_TRACING_ENABLE, false);
+    setDefaultProperty(ARG_S3_CONFIG, null);
   }
 
   private void initOptions() {
@@ -409,6 +417,8 @@ public class Settings extends BaseSettings {
     addOption(ARG_TRACING_AGENT_PORT, "jaeger agent port", "jaeger_agent_port");
 
     addBooleanOption(ARG_TRACING_ENABLE, "enable tracing");
+
+    addOption(ARG_S3_CONFIG, "S3 Bucket configuration for storage", "s3cfg");
   }
 
   private void parseCommandLine(String[] args) {
@@ -457,6 +467,7 @@ public class Settings extends BaseSettings {
     _periodCheckWorkMs = getLongOptionValue(ARG_PERIOD_CHECK_WORK_MS);
     _logFile = getStringOptionValue(ARG_LOG_FILE);
     _logLevel = getStringOptionValue(ARG_LOG_LEVEL);
+    _s3cfg = getStringOptionValue(ARG_S3_CONFIG);
   }
 
   public void setContainersLocation(Path dir) {
