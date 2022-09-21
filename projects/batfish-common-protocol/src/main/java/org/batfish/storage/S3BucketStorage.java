@@ -100,7 +100,7 @@ import software.amazon.awssdk.core.sync.RequestBody;
 public class S3BucketStorage implements StorageProvider {
   private static final Logger LOGGER = LogManager.getLogger(S3BucketStorage.class);
 
-  @VisibleForTesting static final Duration GC_SKEW_ALLOWANCE = Duration.ofMinutes(1440L);
+  @VisibleForTesting static final Duration GC_SKEW_ALLOWANCE = Duration.ofMinutes(10L);
   private static final String ID_EXTENSION = ".id";
   private static final String SUFFIX_LOG_FILE = ".log";
   private static final String SUFFIX_ANSWER_JSON_FILE = ".json";
