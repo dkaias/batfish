@@ -70,4 +70,5 @@ BATFISH_MAVEN_ARTIFACTS = [
     "org.skyscreamer:jsonassert:1.5.1",
     "org.yaml:snakeyaml:2.0",
     "org.carlspring.cloud.aws:s3fs-nio:1.0.1",
+    "software.amazon.awssdk:sts:2.17.42",
 ]
