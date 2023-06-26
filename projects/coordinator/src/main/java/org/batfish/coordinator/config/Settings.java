@@ -1,9 +1,15 @@
 package org.batfish.coordinator.config;
 
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
 import org.batfish.common.BaseSettings;
 import org.batfish.common.BatfishLogger;
 import org.batfish.common.BfConsts;
@@ -33,6 +39,8 @@ public class Settings extends BaseSettings {
   public static final String ARG_SERVICE_WORK_V2_PORT = "workv2port";
 
   private static final String ARG_WORK_BIND_HOST = "workbindhost";
+  private static final String ARG_S3_BUCKET = "s3bucket";
+  private static final String ARG_S3_REGION = "s3region";
 
   private static final String ARGNAME_PATHS = "path..";
 
@@ -49,8 +57,10 @@ public class Settings extends BaseSettings {
   private String _serviceName;
   private int _serviceWorkV2Port;
   private String _workBindHost;
+  private String _s3Bucket;
+  private String _s3Region;
 
-  public Settings(String[] args) {
+  public Settings(String[] args) throws IOException {
     super(
         getConfig(
             BfConsts.PROP_COORDINATOR_PROPERTIES_PATH,
@@ -122,6 +132,8 @@ public class Settings extends BaseSettings {
     setDefaultProperty(ARG_WORK_BIND_HOST, Ip.ZERO.toString());
     setDefaultProperty(ARG_SERVICE_NAME, "coordinator-service");
     setDefaultProperty(ARG_SERVICE_WORK_V2_PORT, CoordConsts.SVC_CFG_WORK_V2_PORT);
+    setDefaultProperty(ARG_S3_BUCKET, null);
+    setDefaultProperty(ARG_S3_REGION, null);
   }
 
   private void initOptions() {
@@ -163,6 +175,10 @@ public class Settings extends BaseSettings {
         "port for work management service v2",
         "port_number_work_v2_service");
 
+    addOption(ARG_S3_BUCKET, "bucket name for s3 storage", "s3_bucket_name");
+
+    addOption(ARG_S3_REGION, "region for s3 storage", "s3_region");
+
     // deprecated and ignored
     for (String deprecatedStringArg :
         new String[] {
@@ -202,7 +218,7 @@ public class Settings extends BaseSettings {
     }
   }
 
-  private void parseCommandLine(String[] args) {
+  private void parseCommandLine(String[] args) throws IOException {
     initCommandLine(args);
 
     if (getBooleanOptionValue(ARG_HELP)) {
@@ -219,8 +235,24 @@ public class Settings extends BaseSettings {
     _serviceName = getStringOptionValue(ARG_SERVICE_NAME);
     _workBindHost = getStringOptionValue(ARG_WORK_BIND_HOST);
     _serviceWorkV2Port = getIntegerOptionValue(ARG_SERVICE_WORK_V2_PORT);
+    _s3Bucket = getStringOptionValue(ARG_S3_BUCKET);
+    _s3Region = getStringOptionValue(ARG_S3_REGION);
     _containersLocation = getPathOptionValue(ARG_CONTAINERS_LOCATION);
+    if (_s3Bucket != null && _s3Region != null) {
+      _containersLocation = getS3Path(_containersLocation, _s3Region, _s3Bucket);
+    }
     _periodAssignWorkMs = getLongOptionValue(ARG_PERIOD_ASSIGN_WORK_MS);
+  }
+
+  @SuppressWarnings("PMD.CloseResource")
+  private Path getS3Path(Path containersLocation, String s3Region, String s3BucketName)
+      throws IOException {
+    Map<String, String> properties = Map.of("s3fs.region", s3Region);
+    FileSystem s3FileSystem =
+        FileSystems.newFileSystem(
+            URI.create("s3:///"), properties, Thread.currentThread().getContextClassLoader());
+    Path bucketPath = s3FileSystem.getPath("/" + s3BucketName);
+    return bucketPath.resolve(containersLocation.toString());
   }
 
   public void setQuestionTemplateDirs(List<Path> questionTemplateDirs) {

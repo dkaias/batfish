@@ -69,4 +69,5 @@ BATFISH_MAVEN_ARTIFACTS = [
     "org.parboiled:parboiled-java:1.4.1",
     "org.skyscreamer:jsonassert:1.5.1",
     "org.yaml:snakeyaml:2.0",
+    "org.carlspring.cloud.aws:s3fs-nio:1.0.1",
 ]

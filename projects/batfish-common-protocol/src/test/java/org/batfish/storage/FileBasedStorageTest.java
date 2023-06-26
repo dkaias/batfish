@@ -36,6 +36,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -339,7 +341,7 @@ public final class FileBasedStorageTest {
     Path dir = parentDir.toPath().resolve("testDir");
 
     // Confirm mkdirs throws when creating a dir within a read-only dir
-    _thrown.expectMessage(containsString("Unable to create directory"));
+    _thrown.expect(AccessDeniedException.class);
     _storage.mkdirs(dir);
   }
 
@@ -381,7 +383,7 @@ public final class FileBasedStorageTest {
 
     assertThat(_storage.loadNodeRoles(networkId, nodeRolesId), equalTo(nodeRolesData));
 
-    _thrown.expect(FileNotFoundException.class);
+    _thrown.expect(NoSuchFileException.class);
     _storage.loadNodeRoles(networkId, new NodeRolesId("missing"));
   }
 
@@ -637,7 +639,7 @@ public final class FileBasedStorageTest {
       fail();
     } catch (BatfishException e) {
       assertThat(e.getMessage(), containsString("Failed to deserialize object"));
-      assertThat(e.getCause(), instanceOf(FileNotFoundException.class));
+      assertThat(e.getCause(), instanceOf(NoSuchFileException.class));
     }
 
     _storage.storeL3Adjacencies(GlobalBroadcastNoPointToPoint.instance(), networkSnapshot);
